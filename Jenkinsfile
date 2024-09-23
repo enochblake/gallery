@@ -14,7 +14,7 @@ pipeline {
         stage('Clone repo') {
             steps {
                 echo 'Cloning the repository...'
-                git branch: 'master', url: 'https://github.com/enochblake/gallery'
+                git branch: 'master', url: 'https://github.com/enochblake/gallery.git'
             }
         }
         stage('Install Npm') {
