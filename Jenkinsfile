@@ -4,13 +4,6 @@ pipeline {
         nodejs 'nodejs'   // Ensure this name matches your Global Tool Configuration
     }
 
-    environment {
-        GIT_TRACE = '1'
-        GIT_HTTP_LOW_SPEED_LIMIT = '0'
-        GIT_HTTP_LOW_SPEED_TIME = '999999'
-        GIT_CURL_VERBOSE = '1'
-    }
-
     stages {
         stage('Node Version') {
             steps {
@@ -21,7 +14,7 @@ pipeline {
         stage('Clone repo') {
             steps {
                 echo 'Cloning the repository...'
-                git credentialsId: 'gitcredentials', url: 'git@github.com:enochblake/gallery.git'
+                git credentialsId: 'gitcredentials', url: 'https://github.com/enochblake/gallery'
             }
         }
         stage('Install Npm') {
