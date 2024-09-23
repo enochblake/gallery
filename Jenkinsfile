@@ -1,26 +1,59 @@
 pipeline {
     agent any
+    tools {
+        nodejs 'NodeJS 22.9.0' // Ensure this name matches your Global Tool Configuration
+    }
+
     stages {
-        stage('Checkout SCM') {
+        stage('Node Version') {
             steps {
-                checkout scm
+                echo 'Checking Node.js version...'
+                sh 'node --version'
             }
         }
-        stage('Install Dependencies') {
+        stage('Clone repo') {
             steps {
-                // Make sure npm is available in the environment
+                echo 'Cloning the repository...'
+                git branch: 'master',
+                sh 'git clone 'https://github.com/enochblake/gallery'
+            }
+        }
+        stage('Install Npm') {
+            steps {
+                echo 'Installing npm packages...'
                 sh 'npm install'
+                sh 'npm install mongodb'
+                sh 'npm install -g webpack'
             }
         }
-        stage('Deploy to Render') {
+        stage('Build') {
             steps {
-                // Add your deployment steps here
+                echo 'Running the build...'
+                sh 'npm run build'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                sh 'npm test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying the app...'
+                timeout(time: 5, unit: 'MINUTES') {  // Timeout to avoid infinite waiting
+                    sh 'node server.js'
+                }
             }
         }
     }
+
     post {
+        always {
+            echo 'Pipeline completed.'
+        }
         failure {
-            echo 'Build failed!'
+            echo 'Pipeline failed.'
         }
     }
 }
